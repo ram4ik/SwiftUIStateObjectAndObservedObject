@@ -8,14 +8,35 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @StateObject var viewModel: ViewModel = ViewModel()
+    @State var path: [String] = []
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack(path: $path) {
+            List(viewModel.heroNames, id: \.self) { heroName in
+                Text(heroName)
+                
+            }
+            .navigationTitle("Marvel Heroes")
+            .toolbar(content: {
+                Button(action: {
+                    viewModel.addNames("Captan America")
+                }, label: {
+                    Image(systemName: "plus")
+                })
+            })
+            .toolbar(content: {
+                Button(action: {
+                    path.append("Favorite Screen")
+                }, label: {
+                    Image(systemName: "heart")
+                })
+            })
+            .navigationDestination(for: String.self) { _ in
+                AnotherScreenView(viewModel: viewModel)
+            }
         }
-        .padding()
     }
 }
 
